@@ -3,6 +3,10 @@
 ダミーのzipfileを使って
 
 
+### Goの使用関係
+
+package import の制約の関係からfileの配置を$GOPATH配下の`github.com/uzuna/learn-go-binary-parse`に移動。
+
 
 ### analysis zip file format
 
