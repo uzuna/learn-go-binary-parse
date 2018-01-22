@@ -38,12 +38,25 @@ func addToZip(filename string, zipWriter *zip.Writer) error {
 	}
 	defer src.Close()
 
-	writer, err := zipWriter.Create(filename)
+	info, err := os.Stat(filename)
 	if err != nil {
 		return err
 	}
 
-	_, err = io.Copy(writer, src)
+	hdr, err := zip.FileInfoHeader(info)
+	if err != nil {
+		return err
+	}
+	f, err := zipWriter.CreateHeader(hdr)
+
+	// writer, err := zipWriter.Create(filename)
+	// body, err := ioutil.ReadFile(filename)
+	// if err != nil {
+	// 	return err
+	// }
+	// f.Write(body)
+
+	_, err = io.Copy(f, src)
 	if err != nil {
 		return err
 	}

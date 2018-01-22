@@ -8,6 +8,17 @@ https://pkware.cachefly.net/webdocs/casestudies/APPNOTE.TXT
 package import の制約の関係からfileの配置を$GOPATH配下の`github.com/uzuna/learn-go-binary-parse`に移動。
 
 
+## 最終Interface
+
+- verbose()
+- 圧縮されたファイル構造にアクセスできる
+    + list
+    + find
+    + get
+- Fileとして出力できる
+    + extract(dir)
+
+
 ### analysis zip file format
 
 Big EndianはL->R
@@ -121,3 +132,39 @@ the starting disk number        4 bytes
 ```
 
 zip central dhirectory end codeの始点`50 4B 05 06`
+
+
+### 4.3.7  Local file header:
+
+```
+local file header signature     4 bytes  (0x04034b50)
+version needed to extract       2 bytes
+general purpose bit flag        2 bytes
+compression method              2 bytes
+last mod file time              2 bytes
+last mod file date              2 bytes
+crc-32                          4 bytes
+compressed size                 4 bytes
+uncompressed size               4 bytes
+file name length                2 bytes
+extra field length              2 bytes
+
+file name (variable size)
+extra field (variable size)
+```
+
+golangのachive/ip圧縮だとlocalfileHeaderにあるsizeが0になる?
+
+50 4B 03 04
+14 00 //V
+08 00 //G
+08 00 //C
+00 00 //LT
+00 00 //LD
+00 00 00 00 //CS 
+00 00 00 00 //UCS
+00 00 00 00 
+0B 00 00 00 64 75
+6D 6D 79 2F 61 2E 74 78 74 4A 4C 4C 04 04 00 00
+FF FF 50 4B 07 08 2D 73 07 F0 09 00 00 00 03 00
+00 00 

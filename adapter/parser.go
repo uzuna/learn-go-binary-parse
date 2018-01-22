@@ -17,7 +17,7 @@ const (
 	// ZipFileDateTime	// 専用のパーサを追加する
 )
 
-// 読み取2りを行う時の定義
+// 読み取りを行う時の定義
 type BynaryReadDefine struct {
 	Name   string
 	Length uint
