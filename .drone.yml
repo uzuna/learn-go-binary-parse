@@ -1,6 +1,10 @@
+workspace:
+  base: /go
+  path: src/github.com/uzuna/learn-go-binary-parse
+
 pipeline:
   go:
-    image: golang
+    image: golang:1.8
     commands:
       - go build
       - go test ./...
