@@ -7,4 +7,5 @@ pipeline:
     image: golang:1.8
     commands:
       - go build
-      - go test ./...
+      # - go test ./...
+      - go test -cover ./model/zip/
