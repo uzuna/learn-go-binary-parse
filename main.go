@@ -3,7 +3,7 @@ package main
 import (
 	"io/ioutil"
 
-	"github.com/uzuna/learn-go-binary-parse/model"
+	"github.com/uzuna/learn-go-binary-parse/model/zip"
 )
 
 func main() {
@@ -13,7 +13,7 @@ func main() {
 		panic(err)
 	}
 	// log.Println(data)
-	errUnzip := model.Unzip(data)
+	errUnzip := zip.Unzip(data)
 	if errUnzip != nil {
 		panic(errUnzip)
 	}

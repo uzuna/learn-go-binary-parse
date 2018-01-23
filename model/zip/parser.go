@@ -1,4 +1,4 @@
-package model
+package zip
 
 import (
 	"bytes"
@@ -9,129 +9,9 @@ import (
 )
 
 /*
- 任意のデータをUnzipする
-*/
-func Unzip(data []byte) error {
-	// zipのCD終端レコードを取得する
-	eocd, err := readEOCD(data)
-	if err != nil {
-		return err
-	}
-	// log.Printf("%+v\n", eocd)
-
-	// CD終端レコードからCDの開始点を見つける
-	curEntriNo := uint16(0)
-	curOffset := eocd.Offset
-	cdhList := make([]CentralDirectoryHeader, eocd.EntriesNumber)
-	for {
-		cddata := data[curOffset:]
-		cdh, err := readCDH(cddata)
-		if err != nil {
-			panic(err)
-		}
-		log.Printf("%+v\n", cdh)
-		cdhList[curEntriNo] = cdh
-		curEntriNo += uint16(1)
-		curOffset += cdh.HeaderLength
-		if curEntriNo >= eocd.EntriesNumber {
-			break
-		}
-	}
-
-	// CDをもとにFileDataを読む
-	curEntriNo = uint16(0)
-	for {
-		cdh := cdhList[curEntriNo]
-		curOffset := cdh.RelativeOffsetOfLocalHeader
-		cddata := data[curOffset:]
-		cdf, err := readFile(cddata, cdh)
-		if err != nil {
-			panic(err)
-		}
-		log.Printf("%+v\n", cdf)
-		log.Println(string(cdf.FileData))
-		curEntriNo += uint16(1)
-		if curEntriNo >= eocd.EntriesNumber {
-			break
-		}
-	}
-
-	return nil
-}
-
-/*
- End of Central Directory Record
-*/
-type EndOfCentralDirectory struct {
-	Signeture               uint32
-	DiskNumber              uint16
-	DiskStartNumber         uint16
-	EntriesNumberOfThisDisk uint16
-	EntriesNumber           uint16
-	Size                    uint32
-	Offset                  uint32
-	CommentLength           uint16
-	// Comment         uint16
-}
-
-/*
- Central Directory Header
-*/
-type CentralDirectoryHeader struct {
-	Signeture                   uint32
-	VersionMadeBy               []uint8
-	VersionNeededToExtract      uint16
-	GeneralPurposeBitFlag       uint16
-	CompressionMethod           uint16
-	LastModFileTime             uint16
-	LastModFileDate             uint16
-	CRC32                       uint32
-	CompressedSize              uint32
-	UnCompressedSize            uint32
-	FileNameLength              uint16
-	ExtraFieldLength            uint16
-	FileCommentLength           uint16
-	DiskNumberStart             uint16
-	InternalFileAttributes      uint16
-	ExternalFileAttributes      uint32
-	RelativeOffsetOfLocalHeader uint32
-
-	FileName    string
-	ExtraField  []uint8
-	FileComment []uint8
-
-	// 終端位置を取得
-	HeaderLength uint32
-}
-
-/*
- Local header
-*/
-type LocalFile struct {
-	Signeture              uint32
-	VersionNeededToExtract uint16
-	GeneralPurposeBitFlag  uint16
-	CompressionMethod      uint16
-	LastModFileTime        uint16
-	LastModFileDate        uint16
-	CRC32                  uint32
-	CompressedSize         uint32
-	UnCompressedSize       uint32
-	FileNameLength         uint16
-	ExtraFieldLength       uint16
-
-	FileName   string
-	ExtraField []uint8
-
-	FileData []byte
-
-	HeaderLength uint32
-}
-
-/*
  Signetureを検知して構造を読み出す
 */
-func readEOCD(data []byte) (EndOfCentralDirectory, error) {
+func ReadEOCD(data []byte) (EndOfCentralDirectory, error) {
 	// 検知Pattern
 	sig := []byte{0x50, 0x4B, 0x05, 0x06}
 
@@ -197,7 +77,7 @@ func readEOCD(data []byte) (EndOfCentralDirectory, error) {
 /*
  Signetureを検知して構造を読み出す
 */
-func readCDH(data []byte) (CentralDirectoryHeader, error) {
+func ReadCDH(data []byte) (CentralDirectoryHeader, error) {
 	// 検知Pattern
 	sig := []byte{0x50, 0x4B, 0x01, 0x02}
 
@@ -315,7 +195,7 @@ func readCDH(data []byte) (CentralDirectoryHeader, error) {
 /*
  read Local File data
 */
-func readFile(data []byte, cdh CentralDirectoryHeader) (LocalFile, error) {
+func ReadLocalFile(data []byte, cdh CentralDirectoryHeader) (LocalFile, error) {
 	// 検知Pattern
 	sig := []byte{0x50, 0x4B, 0x03, 0x04}
 
