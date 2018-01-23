@@ -2,6 +2,7 @@ package main
 
 import (
 	"io/ioutil"
+	"log"
 
 	"github.com/uzuna/learn-go-binary-parse/model/zip"
 )
@@ -13,11 +14,15 @@ func main() {
 		panic(err)
 	}
 	// log.Println(data)
-	errUnzip := zip.Unzip(data)
-	if errUnzip != nil {
-		panic(errUnzip)
-	}
+	// errUnzip := zip.Unzip(data)
+	// if errUnzip != nil {
+	// 	panic(errUnzip)
+	// }
 	// adapter.binaty_parse.ConvertType.LEUint16
 	// log.Printf("%v", adapter.LEUint16)
-
+	zv, err := zip.Verbose(data)
+	if err != nil {
+		panic(err)
+	}
+	log.Printf("%+v", zv)
 }

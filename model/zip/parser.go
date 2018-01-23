@@ -195,9 +195,11 @@ func ReadCDH(data []byte) (CentralDirectoryHeader, error) {
 /*
  read Local File data
 */
-func ReadLocalFile(data []byte, cdh CentralDirectoryHeader) (LocalFile, error) {
+func ReadLocalFile(binarydata []byte, cdh CentralDirectoryHeader) (LocalFile, error) {
 	// 検知Pattern
 	sig := []byte{0x50, 0x4B, 0x03, 0x04}
+
+	data := binarydata[cdh.RelativeOffsetOfLocalHeader:]
 
 	// 入力先の型を定義
 	zRecord := LocalFile{}

@@ -1,6 +1,14 @@
 package zip
 
 /*
+ CentralDirectoryの情報だけ
+*/
+type ZipVerbose struct {
+	EndOfCentralDirectory   EndOfCentralDirectory
+	CentralDirectoryHeaders []CentralDirectoryHeader
+}
+
+/*
  End of Central Directory Record
 */
 type EndOfCentralDirectory struct {
