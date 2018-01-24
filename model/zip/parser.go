@@ -9,6 +9,14 @@ import (
 )
 
 /*
+ EOCDを探す
+*/
+func DetectEOCD(data []byte) int {
+	sig := []byte{0x50, 0x4B, 0x05, 0x06}
+	return bytes.Index(data, sig)
+}
+
+/*
  Signetureを検知して構造を読み出す
 */
 func ReadEOCD(data []byte) (EndOfCentralDirectory, error) {
