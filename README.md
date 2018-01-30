@@ -168,3 +168,30 @@ golangのachive/ip圧縮だとlocalfileHeaderにあるsizeが0になる?
 6D 6D 79 2F 61 2E 74 78 74 4A 4C 4C 04 04 00 00
 FF FF 50 4B 07 08 2D 73 07 F0 09 00 00 00 03 00
 00 00 
+
+
+## SegmentSeeker?
+File構造に合わせて任意のsegmentに合わせて遷移をする
+
+
+## Golang libの構造
+
+#### Reader/Writer
+
+Byte列を扱うPrimitiveなInterface
+そのままでは扱いにくいので他のものを使うことが多い
+
+```
+read([]byte)
+write([]byte)
+```
+
+#### Scanner
+テキスト向き。改行単位でデータを読み出す
+
+#### BufferdReader/Writer
+disk直読みは遅くなるので、間にbufferを入れ手高速化
+アクセスを抽象化してあるのでmethodは変わらない
+
+#### Read/WriteFile
+byte->File読み書きを行う。
